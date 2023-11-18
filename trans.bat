@@ -1,0 +1,1 @@
+scp -r ./code/bin root@192.168.88.251:/newspace/chess
