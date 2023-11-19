@@ -2,6 +2,9 @@
 #include <sys/mman.h>
 #include<fcntl.h>
 #include <unistd.h>
+#include "eventManager.h"
+#include "touchEvent.h"
+#include "log.h"
 
 ScreenMgr::ScreenMgr(/* args */)
 {
@@ -34,6 +37,20 @@ void ScreenMgr::init()
     m_init = true;
     m_screenfd=open("/dev/fb0",O_RDWR);
     m_basescreen = (uint32_t *)mmap(NULL,800*480*4,PROT_READ|PROT_WRITE,MAP_SHARED,m_screenfd,0);
+
+    //打开触摸屏
+    m_screenfd=open("/dev/input/event0",O_RDWR);
+	if(m_screenfd < 0)
+	{
+		perror("open chumuping fail:");
+	}
+    else
+    {
+        m_thread = std::thread(&ScreenMgr::touchThread,this);
+        m_thread.detach();
+    }
+
+    
 }
 
 void ScreenMgr::openPage(uint32_t pageid, pos position, uint32_t width, uint32_t height, uint32_t *data)
@@ -150,4 +167,49 @@ uint32_t ScreenMgr::getNewPageID()
     }
     
     return pageid;
+}
+
+void ScreenMgr::touchThread()
+{
+    struct input_event xy;
+    pos position;
+    TouchEvent e;
+    while (true)
+    {
+        bool updata = false;
+        position.clean();
+        
+        //读取触摸屏数据
+        read(m_screenfd,&xy,sizeof(xy));
+        if(xy.type == EV_ABS)  //如果事件类型为触摸屏
+        {   
+            if (xy.code == ABS_X )//获取x轴坐标
+            {
+                position.x = xy.value;
+                updata = true;
+            }
+        }
+
+        read(m_screenfd,&xy,sizeof(xy));
+        if(xy.type == EV_ABS)  //如果事件类型为触摸屏
+        {   
+            if (xy.code == ABS_Y )//获取x轴坐标
+            {
+                position.y = xy.value;
+                updata = true;
+            }
+        }
+
+        if (updata)
+        {
+            Debug_log("touchThread: x = %d, y = %d",position.x,position.y);
+
+            e.update(&position,sizeof(position));
+            sEventManager.addEvent(&e);
+        }
+        
+        
+        //sleep(2);
+    }
+    
 }

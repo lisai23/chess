@@ -29,6 +29,13 @@
         "sstream": "cpp",
         "stdexcept": "cpp",
         "tuple": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "list": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp",
+        "ctime": "cpp",
+        "thread": "cpp",
+        "mutex": "cpp",
+        "system_error": "cpp"
     }
 }

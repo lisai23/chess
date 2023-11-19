@@ -2,6 +2,7 @@
 #define SCREENMGR_H
 #include "../define.h"
 #include <map>
+#include <thread>
 
 #define SCREENWIDTH 800
 #define SCREENHEIGHT 480
@@ -36,6 +37,8 @@ public:
     void openPage(uint32_t pageid, pos position, uint32_t width, uint32_t height, uint32_t *data);
     void closePage(uint32_t pageid);
     uint32_t getNewPageID();
+
+    void touchThread();
 private:
     ScreenMgr(/* args */);
     ~ScreenMgr();
@@ -44,6 +47,7 @@ private:
     int32_t m_screenfd = 0;
     uint32_t *m_basescreen = nullptr;
     std::map<uint32_t,pageInfo> m_mapPage;
+    std::thread m_thread;
 };
 
 #define sScreenMgr ScreenMgr::instance()

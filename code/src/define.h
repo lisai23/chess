@@ -14,9 +14,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include <signal.h>
-
+#include <stdlib.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <linux/input.h>
 
 enum ImageType
 {
@@ -30,6 +31,11 @@ struct pos
 {
     uint32_t x = 0;
     uint32_t y = 0;
+    void clean()
+    {
+        x = 0;
+        y = 0;
+    }
 };
 
 enum DisplayState
