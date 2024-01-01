@@ -16,7 +16,6 @@ ImageHandle::~ImageHandle()
     {
         delete handle;
     }
-    
 }
 
 void ImageHandle::SetImageType(uint32_t imagetype, Image *img)

@@ -1,6 +1,6 @@
 #ifndef SCREENMGR_H
 #define SCREENMGR_H
-#include "../define.h"
+#include "define.h"
 #include <map>
 #include <thread>
 
@@ -33,6 +33,7 @@ class ScreenMgr
 {
 public:
     static ScreenMgr &instance(){static ScreenMgr instance; return instance;}
+    void testfunc();
     void init();
     void openPage(uint32_t pageid, pos position, uint32_t width, uint32_t height, uint32_t *data);
     void closePage(uint32_t pageid);

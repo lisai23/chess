@@ -5,23 +5,15 @@
 #include "eventManager.h"
 #include <ctime>
 #include "log.h"
-
+#include "Timer.h"
 
 int main(int argc, char const *argv[])
 {
     log_init();
+    sTimerManager.init();
     sScreenMgr.init();
-    // Image img("./resource/chessboard.bmp");
-    
-    // pos position;
-    // position.x = 0;
-    // position.y = 100;
-    // img.show(position);
-    // sleep(2);
-    // img.close();
 
-    // TouchEvent e(&position,sizeof(position));
-    // sEventManager.addEvent(&e);
+    
     
     return sEventManager.loop();
 }

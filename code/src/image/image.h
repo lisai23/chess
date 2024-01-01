@@ -7,14 +7,19 @@ class Image
 {
 public:
     Image();
-    Image(std::string path);
+    Image(std::string path, pos position = pos{0,0});
     ~Image();
 
-    void loadFile(std::string path);
+    void loadFile(std::string &path);
     ImageType getImageType(){return m_type;}
 
-    void show(pos p);
+    void show(pos p=pos{19970814,19970814});
     void close();
+    void flash();
+    void move(pos posotion);
+
+    void setPos(pos p);
+    pos getPos();
 
     void setType(ImageType type);
     ImageType getType();
@@ -40,6 +45,7 @@ private:
     ImageType m_type = UNKNOWN_TYPE; 
     DisplayState m_displaystate = E_NotDisplay;
     uint32_t m_pageid;
+    pos m_position;
 };
 
 

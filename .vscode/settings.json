@@ -36,6 +36,10 @@
         "ctime": "cpp",
         "thread": "cpp",
         "mutex": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "map": "cpp",
+        "cmath": "cpp",
+        "deque": "cpp",
+        "numeric": "cpp"
     }
 }

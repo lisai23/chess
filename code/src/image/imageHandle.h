@@ -1,6 +1,6 @@
 #ifndef IMAGEHANDLE_H
 #define IMAGEHANDLE_H
-#include "../define.h"
+#include "define.h"
 #include "handleIf.h"
 #include "image.h"
 

@@ -3,7 +3,7 @@
 #include <typeinfo>
 #include <mutex>
 
-std::mutex g_mutex;
+std::mutex g_event_mutex;
 
 EventManager::EventManager(/* args */)
 {
@@ -33,10 +33,10 @@ uint32_t EventManager::loop()
     while (true)
     {
         //std::cout << "m_eventlist.empty = " << m_eventlist.empty() << std::endl;
-        g_mutex.lock();
+        g_event_mutex.lock();
         if (!m_eventlist.empty())
         {
-            event *e = m_eventlist.back();
+            event *e = m_eventlist.back(); 
             if (nullptr != e)
             {
                 e->handle();
@@ -51,7 +51,7 @@ uint32_t EventManager::loop()
             
             m_eventlist.pop_back();
         }    
-        g_mutex.unlock();
+        g_event_mutex.unlock();
         usleep(20000);
     }
     
@@ -62,9 +62,9 @@ void EventManager::addEvent(event *e)
 {
     if (nullptr != e)
     {
-        g_mutex.lock();
+        g_event_mutex.lock();
         m_eventlist.push_front(e);
-        g_mutex.unlock();
+        g_event_mutex.unlock();
     }
     else
     {

@@ -3,6 +3,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/time.h>
+#include <chrono>
 
 FILE *g_fp = nullptr;
 
@@ -52,8 +54,13 @@ void currenttime(char *buff)
 	//使用该函数就可得到当前系统时间，使用该函数需要将传入time_t类型变量nowtime的地址值。
 	p = localtime(&nowtime);
 	//由于此时变量nowtime中的系统时间值为日历时间，我们需要调用本地时间函数p=localtime（time_t* nowtime）将nowtime变量中的日历时间转化为本地时间，存入到指针为p的时间结构体中。不改的话，可以参照注意事项手动改。
+
+    struct timeval    tv;
+    struct timezone   tz;
+    gettimeofday(&tv, &tz);
+
 	memset(buff,0,LOGSIZE);
-    sprintf(buff,"%02d:%02d:%02d",p->tm_hour,p->tm_min,p->tm_sec);
+    sprintf(buff,"%02d:%02d:%02d.%03d", p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec/1000);
 }
 
 void debug_log(
@@ -64,6 +71,7 @@ void debug_log(
             const char *format ,...)  // __VA_ARGS__会把传入的参数以逗号隔开并且匹配到const char *format ,...
 {
 		static char output[1024]={0};
+        memset(output,0,1024);
         va_list arg_list;
         va_start(arg_list,format);
         char timebuff[LOGSIZE] = {0};
@@ -103,6 +111,6 @@ void debug_log(
         }
         
         //printf("[%s][%s][%s][%d]:%s\n",timebuff, file, func, iLine, output);
-#endif
+#endif //__PRINTFILE__
         va_end(arg_list);
 }

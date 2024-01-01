@@ -11,6 +11,7 @@ include+=" -I./code/src/image"
 include+=" -I./code/src/screen"
 include+=" -I./code/src/event"
 include+=" -I./code/src/log"
+include+=" -I./code/src/common"
 
 lib_path=-L/home/lisai/tool/zlib/lib
 lib_path+=" -L/home/lisai/tool/png/lib"
@@ -33,6 +34,7 @@ src+=" ./code/src/event/event.cpp"
 src+=" ./code/src/event/eventManager.cpp"
 src+=" ./code/src/event/touchEvent.cpp"
 src+=" ./code/src/log/log.cpp"
+src+=" ./code/src/common/Timer.cpp"
 
 arg=-D__PRINTFILE__ 
 
