@@ -28,9 +28,20 @@ ScreenMgr::~ScreenMgr()
         {
             delete m_mapPage[i].backup;
             m_mapPage[i].backup = nullptr;
-            std::cout << "【" << __FILE__ << "】 line: " << __LINE__ << std::endl;
         }
     }
+
+    recover();
+}
+
+void ScreenMgr::backPack()
+{
+    Debug_log("backPack screen");
+}
+
+void ScreenMgr::recover()
+{
+    Debug_log("recover screen");
 }
 
 void ScreenMgr::testfunc()
@@ -40,6 +51,7 @@ void ScreenMgr::testfunc()
 
 void ScreenMgr::init()
 {
+    backPack();
     m_init = true;
     m_screenfd=open("/dev/fb0",O_RDWR);
     m_basescreen = (uint32_t *)mmap(NULL,800*480*4,PROT_READ|PROT_WRITE,MAP_SHARED,m_screenfd,0);
@@ -64,13 +76,33 @@ void ScreenMgr::init()
     // test.reStart(1000,true);
 }
 
-void ScreenMgr::openPage(uint32_t pageid, pos position, uint32_t width, uint32_t height, uint32_t *data)
+void ScreenMgr::openPage(Image *img)
 {
     if (nullptr == m_basescreen)
     {
         std::cout << "screen not init." << std::endl;
         return;
     }
+
+    if (nullptr == img)
+    {
+        Debug_log("img is null !");
+        return;
+    }
+    
+    pos position = img->getPosition();
+    uint32_t width = img->getWidth();
+    uint32_t height = img->getHeight();
+    uint32_t *data = img->getDataPointer();
+
+    if (nullptr == data)
+    {
+        Debug_log("img data is null !");
+        return;
+    }
+    
+    uint32_t pageid = getNewPageID();
+    img->setPageID(pageid);
 
     if (position.x + height > SCREENWIDTH || position.y + width > SCREENHEIGHT)
     {
@@ -101,7 +133,6 @@ void ScreenMgr::openPage(uint32_t pageid, pos position, uint32_t width, uint32_t
     }
     
     
-
     uint32_t *p = m_mapPage[pageid].backup;
     uint32_t tmp = 0;
     for (uint32_t h = position.x; h < position.x+height; h++)
@@ -128,7 +159,8 @@ void ScreenMgr::closePage(uint32_t pageid)
 {
     if (nullptr == m_basescreen)
     {
-        std::cout << "screen not init." << std::endl;
+        //std::cout << "screen not init." << std::endl;
+        Debug_log("screen not init.");
         return;
     }
 
@@ -136,13 +168,15 @@ void ScreenMgr::closePage(uint32_t pageid)
     {
         if (E_NotDisplay == m_mapPage[pageid].state)
         {
-            std::cout << "page " << pageid << " is already closed." << std::endl;
+            //std::cout << "page " << pageid << " is already closed." << std::endl;
+            Debug_log("page %d is already closed.", pageid);
             return;
         }
     }
     else
     {
-        std::cout << "there is no page id: " << pageid << std::endl;
+        //std::cout << "there is no page id: " << pageid << std::endl;
+        Debug_log("there is no page id: %d",pageid);
         return;
     }
 
@@ -150,10 +184,10 @@ void ScreenMgr::closePage(uint32_t pageid)
     uint32_t *p = m_mapPage[pageid].backup;
     uint32_t tmp = 0;
 
-    std::cout << "width: " << info.width << std::endl;
-    std::cout << "height: " << info.height << std::endl;
-    std::cout << "x: " << info.position.x << std::endl;
-    std::cout << "y: " << info.position.y << std::endl;
+    // std::cout << "width: " << info.width << std::endl;
+    // std::cout << "height: " << info.height << std::endl;
+    // std::cout << "x: " << info.position.x << std::endl;
+    // std::cout << "y: " << info.position.y << std::endl;
     for (uint32_t h = info.position.x; h < info.position.x+info.height; h++)
     {
         for (uint32_t w = info.position.y; w < info.position.y+info.width; w++)

@@ -15,6 +15,25 @@ namespace
     using chronotime_t = std::chrono::system_clock::time_point;
 } // namespace
 
+enum Timer_T
+{
+    E_Timer_0ms = 0,
+    E_Timer_10ms = 10,
+    E_Timer_125ms = 125,
+    E_Timer_250ms = 250,
+    E_Timer_400ms = 400,
+    E_Timer_500ms = 500,
+    E_Timer_1s = 1000,
+    E_Timer_2s = 2000,
+	E_Timer_4s = 4000,
+	E_Timer_5s = 5000,
+    E_Timer_1min = 60000,
+    E_Timer_3min = 180000,
+    E_Timer_5min = 300000,
+    E_Timer_10min = 600000,
+    E_Timer_20min = 1200000,
+};
+
 class Timer
 {
 public:

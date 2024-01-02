@@ -1,6 +1,7 @@
 #ifndef SCREENMGR_H
 #define SCREENMGR_H
 #include "define.h"
+#include "image.h"
 #include <map>
 #include <thread>
 
@@ -35,7 +36,7 @@ public:
     static ScreenMgr &instance(){static ScreenMgr instance; return instance;}
     void testfunc();
     void init();
-    void openPage(uint32_t pageid, pos position, uint32_t width, uint32_t height, uint32_t *data);
+    void openPage(Image *img);
     void closePage(uint32_t pageid);
     uint32_t getNewPageID();
 
@@ -43,6 +44,8 @@ public:
 private:
     ScreenMgr(/* args */);
     ~ScreenMgr();
+    void recover();
+    void backPack();
 
     bool m_init = false;
     int32_t m_screenfd = 0;

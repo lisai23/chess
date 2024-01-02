@@ -1,7 +1,14 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 #include "define.h"
+#include "Timer.h"
 #include <string>
+
+enum FlashState
+{
+    Flash_Off,
+    Flash_On,
+};
 
 class Image
 {
@@ -15,11 +22,11 @@ public:
 
     void show(pos p=pos{19970814,19970814});
     void close();
-    void flash();
+    void setFlash(bool flash);
     void move(pos posotion);
 
-    void setPos(pos p);
-    pos getPos();
+    void setPosition(pos p);
+    pos getPosition();
 
     void setType(ImageType type);
     ImageType getType();
@@ -35,8 +42,14 @@ public:
 
     void setDataPointer(uint32_t *pdata);
     uint32_t *getDataPointer(); 
+
+    void setPageID(uint32_t id);
+    uint32_t getPageID();
     
 private:
+    void initFlashTimer();
+    void flashLine();
+
     std::string m_filepath;
     uint32_t *m_data = nullptr;
     uint32_t m_size = 0U;
@@ -46,6 +59,9 @@ private:
     DisplayState m_displaystate = E_NotDisplay;
     uint32_t m_pageid;
     pos m_position;
+    static Timer m_flashTimer;
+    bool m_isFlash = false;
+    FlashState m_flashState = FlashState::Flash_Off;
 };
 
 

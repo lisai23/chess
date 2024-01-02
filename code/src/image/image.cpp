@@ -7,15 +7,17 @@
 #include "screenmgr.h"
 #include "log.h"
 
+Timer Image::m_flashTimer = Timer();
+
 Image::Image(/* args */)
 {
     m_filepath.clear();
     m_position.clean();
+    initFlashTimer();
 }
 
 Image::Image(std::string path,pos position)
 {
-    m_position = position;
     if (nullptr == path.c_str())
     {
         //std::cout << "file pointer is null !" << std::endl;
@@ -32,6 +34,8 @@ Image::Image(std::string path,pos position)
         return; 
     }
     
+    m_position = position;
+    initFlashTimer();
     loadFile(path);
 }
 
@@ -93,8 +97,7 @@ void Image::show(pos p)
             m_position.y = p.x;
         }
 
-        m_pageid = sScreenMgr.getNewPageID();
-        sScreenMgr.openPage(m_pageid,m_position,m_width,m_height,m_data);
+        sScreenMgr.openPage(this);
 
         m_displaystate = E_Displaying;
     }
@@ -115,8 +118,21 @@ void Image::close()
     
 }
 
-void Image::flash()
+void Image::setFlash(bool flash)
 {
+    m_isFlash = flash;
+    if (m_isFlash)
+    {
+        m_flashState = FlashState::Flash_On;
+        show();
+        m_flashTimer.start(E_Timer_500ms,true);
+    }
+    else
+    {
+        m_flashState = FlashState::Flash_Off;
+        close();
+        m_flashTimer.stop();
+    }
     
 }
 
@@ -131,12 +147,12 @@ void Image::move(pos posotion)
     this->show(m_position);
 }
 
-void Image::setPos(pos p)
+void Image::setPosition(pos p)
 {
     m_position = p;
 }
 
-pos Image::getPos()
+pos Image::getPosition()
 {
     return m_position;
 }
@@ -189,4 +205,38 @@ void Image::setDataPointer(uint32_t *pdata)
 uint32_t *Image::getDataPointer()
 {
     return m_data;
+}
+
+void Image::setPageID(uint32_t id)
+{
+    m_pageid = id;
+}
+
+uint32_t Image::getPageID()
+{
+    return m_pageid;
+}
+
+void Image::initFlashTimer()
+{
+    m_flashTimer.connect(std::bind(&Image::flashLine,this));
+}
+
+void Image::flashLine()
+{
+    if (m_isFlash)
+    {
+        if (Flash_Off == m_flashState)
+        {
+            //Debug_log("flash on");
+            show();
+            m_flashState = Flash_On;
+        }
+        else
+        {
+            //Debug_log("flash off");
+            close();
+            m_flashState = Flash_Off;
+        }
+    }
 }

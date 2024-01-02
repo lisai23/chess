@@ -37,6 +37,7 @@ src+=" ./code/src/log/log.cpp"
 src+=" ./code/src/common/Timer.cpp"
 
 arg=-D__PRINTFILE__ 
+arg=-DLINUX_ARM 
 
 if test -f $target; then
     rm $target
