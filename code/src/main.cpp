@@ -10,6 +10,7 @@
 #endif
 #include "log.h"
 #include "Timer.h"
+#include "game.h"
 
 typedef void (*sighandler)(int);
 
@@ -28,11 +29,12 @@ int main(int argc, char const *argv[])
     log_init();
     sTimerManager.init();
     sScreenMgr.init();
-    Image img("./resource/chessboard.bmp");
-    img.setFlash(true);
+    sGame.init();
+    //Image img("./resource/chessboard.bmp");
+    //img.setFlash(true);
     //img.show();
-    sleep(5);
-    img.setFlash(false);
+    //sleep(5);
+    //img.setFlash(false);
 
     return sEventManager.loop();
 }

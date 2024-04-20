@@ -3,13 +3,9 @@
 #include <stdint.h>
 #include <iostream>
 #include <stdio.h>
-#include "/home/lisai/jpeg/include/jpeglib.h"
 #include <stdlib.h>
-#include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <linux/fb.h>
-#include <sys/ioctl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -17,7 +13,17 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/types.h>
+
+#ifdef LINUX_ARM
+#include "/home/lisai/jpeg/include/jpeglib.h"
+#include <sys/mman.h>
+#include <linux/fb.h>
+#include <sys/ioctl.h>
 #include <linux/input.h>
+#endif //LINUX_ARM
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 480
 
 enum ImageType
 {
@@ -35,6 +41,21 @@ struct pos
     {
         x = 0;
         y = 0;
+    }
+
+    bool operator<(const pos& other) const {
+        return (x < other.x ||( x == other.x && y < other.y));
+    }
+};
+
+struct rect
+{
+    uint32_t width;
+    uint32_t height;
+    void clean()
+    {
+        width = 0;
+        height = 0;
     }
 };
 

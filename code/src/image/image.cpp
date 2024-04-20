@@ -48,7 +48,7 @@ Image::~Image()
     }    
 }
 
-void Image::loadFile(std::string &path)
+void Image::loadFile(std::string path)
 {
     if (nullptr == path.c_str())
     {

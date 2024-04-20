@@ -13,14 +13,7 @@ ScreenMgr::ScreenMgr(/* args */)
 
 ScreenMgr::~ScreenMgr()
 {
-    if (m_init)
-    {
-        close(m_screenfd);
-        if (nullptr != m_basescreen)
-        {
-            munmap(m_basescreen,800*480*4);
-        }
-    }
+    recover();
 
     for (size_t i = 0; i < m_mapPage.size(); i++)
     {
@@ -31,7 +24,14 @@ ScreenMgr::~ScreenMgr()
         }
     }
 
-    recover();
+    if (m_init)
+    {
+        close(m_screenfd);
+        if (nullptr != m_basescreen)
+        {
+            munmap(m_basescreen,800*480*4);
+        }
+    }
 }
 
 void ScreenMgr::backPack()

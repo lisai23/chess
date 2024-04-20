@@ -12,6 +12,8 @@ include+=" -I./code/src/screen"
 include+=" -I./code/src/event"
 include+=" -I./code/src/log"
 include+=" -I./code/src/common"
+include+=" -I./code/src/game"
+include+=" -I./code/src/page"
 
 lib_path=-L/home/lisai/tool/zlib/lib
 lib_path+=" -L/home/lisai/tool/png/lib"
@@ -35,6 +37,10 @@ src+=" ./code/src/event/eventManager.cpp"
 src+=" ./code/src/event/touchEvent.cpp"
 src+=" ./code/src/log/log.cpp"
 src+=" ./code/src/common/Timer.cpp"
+src+=" ./code/src/game/game.cpp"
+src+=" ./code/src/game/chessboard.cpp"
+src+=" ./code/src/game/pieces.cpp"
+src+=" ./code/src/page/page.cpp"
 
 arg=-D__PRINTFILE__ 
 arg=-DLINUX_ARM 

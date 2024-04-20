@@ -1,5 +1,6 @@
 #include "touchEvent.h"
 #include "log.h"
+#include "page.h"
 
 TouchEvent::TouchEvent(void *data, uint32_t size)
     :event(data,size)
@@ -21,4 +22,6 @@ void TouchEvent::handle()
     
     //std::cout << "file: " << __FILENAME__ << " touchscreen x: " << position.x << " y: " << position.y << std::endl;
     Debug_log("touchscreen x: %d, y: %d",position.x,position.y);
+    //给到page
+    page::touchEvent(position);
 }
