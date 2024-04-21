@@ -1,11 +1,13 @@
 #include "screenmgr.h"
-#include <sys/mman.h>
 #include<fcntl.h>
 #include <unistd.h>
 #include "eventManager.h"
 #include "touchEvent.h"
 #include "log.h"
 #include "Timer.h"
+#ifdef LINUX_ARM
+#include <sys/mman.h>
+#endif
 
 ScreenMgr::ScreenMgr(/* args */)
 {
@@ -29,7 +31,9 @@ ScreenMgr::~ScreenMgr()
         close(m_screenfd);
         if (nullptr != m_basescreen)
         {
+#ifdef LINUX_ARM
             munmap(m_basescreen,800*480*4);
+#endif
         }
     }
 }
@@ -54,7 +58,9 @@ void ScreenMgr::init()
     backPack();
     m_init = true;
     m_screenfd=open("/dev/fb0",O_RDWR);
+#ifdef LINUX_ARM
     m_basescreen = (uint32_t *)mmap(NULL,800*480*4,PROT_READ|PROT_WRITE,MAP_SHARED,m_screenfd,0);
+#endif
 
     //打开触摸屏
     m_screenfd=open("/dev/input/event0",O_RDWR);
@@ -64,8 +70,10 @@ void ScreenMgr::init()
 	}
     else
     {
+#ifdef LINUX_ARM
         m_thread = std::thread(&ScreenMgr::touchThread,this);
         m_thread.detach();
+#endif
     }
 
     // static Timer test;
@@ -104,7 +112,7 @@ void ScreenMgr::openPage(Image *img)
     uint32_t pageid = getNewPageID();
     img->setPageID(pageid);
 
-    if (position.x + height > SCREENWIDTH || position.y + width > SCREENHEIGHT)
+    if (position.x + height > SCREEN_WIDTH || position.y + width > SCREEN_HEIGHT)
     {
         std::cout << "x = " << position.x << ", w = " << width << std::endl;
         std::cout << "y = " << position.y << ", h = " << height << std::endl;
@@ -216,6 +224,7 @@ uint32_t ScreenMgr::getNewPageID()
 
 void ScreenMgr::touchThread()
 {
+#ifdef LINUX_ARM
     struct input_event xy;
     pos position;
     TouchEvent e;
@@ -249,6 +258,7 @@ void ScreenMgr::touchThread()
         if (updata)
         {
             Debug_log("touchThread: x = %d, y = %d",position.x,position.y);
+            position.type = SCREEN_POS;
             e.update(&position,sizeof(position));
             sEventManager.addEvent(&e);
         }
@@ -256,5 +266,5 @@ void ScreenMgr::touchThread()
         
         //sleep(2);
     }
-    
+#endif
 }

@@ -5,8 +5,12 @@ std::map<pos, std::stack<page *>> page::s_PageMap = {};
 
 page::page(/* args */)
 {
+    m_pos.type = LOGIC_POS;
     m_pos.clean();
     m_rect.clean();
+
+    m_image = nullptr;
+    m_backUp = nullptr;
 }
 
 page::~page()
@@ -16,9 +20,9 @@ page::~page()
 void page::initPageMap()
 {
     pos point;
-    for (size_t y = 0; y < SCREEN_HEIGHT; y++)
+    for (size_t y = 0; y < LOGIC_HEIGHT; y++)
     {
-        for (size_t x = 0; x < SCREEN_WIDTH; x++)
+        for (size_t x = 0; x < LOGIC_WIDTH; x++)
         {
             point.x = x;
             point.y = y;
@@ -50,16 +54,36 @@ void page::open()
     if (m_rect.width == 0 || m_rect.height == 0)
     {
         Debug_log("the size of page is 0");
-        return;
     }
+    else
+    {
+        registPageEvent();
+    }
+    
 
-    registPageEvent();
+    
     
 }
 
 void page::close()
 {
+    if (m_rect.width == 0 || m_rect.height == 0)
+    {
+        Debug_log("the size of page is 0");
+    }
+    else
+    {
+        unRegistPageEvent();
+    }
+}
 
+void page::flash(bool state)
+{
+    if (nullptr != m_image)
+    {
+        //m_image->setFlash(true);
+    }
+    
 }
 
 void page::registPageEvent()
@@ -77,6 +101,21 @@ void page::registPageEvent()
     }
 }
 
+void page::unRegistPageEvent()
+{
+    pos point;
+    for (size_t y = m_pos.y; y < m_pos.y+m_rect.height; y++)
+    {
+        for (size_t x = m_pos.x; x < m_pos.x+m_rect.width; x++)
+        {
+            point.x = x;
+            point.y = y;
+
+            s_PageMap[point].pop();
+        }
+    }
+}
+
 void page::touchEvent(pos touch)
 {
     if (s_PageMap.count(touch) > 0)
@@ -86,7 +125,7 @@ void page::touchEvent(pos touch)
             page *p_page = s_PageMap[touch].top();
             if (nullptr != p_page)
             {
-                p_page->onClick();
+                p_page->onClick(touch);
             }
             else
             {

@@ -19,9 +19,9 @@ void TouchEvent::handle()
         memcpy(&position,m_data,m_size);
     }
     
-    
     //std::cout << "file: " << __FILENAME__ << " touchscreen x: " << position.x << " y: " << position.y << std::endl;
-    Debug_log("touchscreen x: %d, y: %d",position.x,position.y);
     //给到page
+    position.switchToLogicPos();
+    Debug_log("touchscreen x: %d, y: %d",position.x,position.y);
     page::touchEvent(position);
 }

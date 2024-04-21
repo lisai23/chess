@@ -5,8 +5,6 @@
 #include <map>
 #include <thread>
 
-#define SCREENWIDTH 800
-#define SCREENHEIGHT 480
 #define MAXPAGEID 1000
 
 struct pageInfo
