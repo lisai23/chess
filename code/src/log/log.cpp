@@ -13,7 +13,9 @@ void log_init()
     struct stat info;
     if (stat(LOGPATH,&info) != 0)
     {
+#ifdef LINUX_ARM
         mkdir(LOGPATH,S_IRGRP|S_IWGRP);
+#endif
     }
     
     g_fp = fopen(CURRENTLOG,"a+");
@@ -76,7 +78,9 @@ void debug_log(
         va_start(arg_list,format);
         char timebuff[LOGSIZE] = {0};
         currenttime(timebuff);
+#ifdef LINUX_ARM
         vsnprintf(output,sizeof(output),format, arg_list);
+#endif
 #ifndef __PRINTFILE__
         printf("[%s][%s][%s][%d]:%s\n",timebuff, file, func, iLine, output);
 #else

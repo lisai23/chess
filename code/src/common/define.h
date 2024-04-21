@@ -25,6 +25,12 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
 
+#define LOGIC_WIDTH 480
+#define LOGIC_HEIGHT 800
+
+#define CHESS_WIDTH 9
+#define CHESS_HEIGHT 10
+
 enum ImageType
 {
     UNKNOWN_TYPE,
@@ -33,10 +39,19 @@ enum ImageType
     PNG_TYPE = 0x474e5089,  
 };
 
+enum PosType
+{
+    LOGIC_POS = 0,
+    SCREEN_POS = 1,
+    CHESS_POS = 2,
+};
+
 struct pos
 {
     uint32_t x;
     uint32_t y;
+    PosType type;
+
     void clean()
     {
         x = 0;
@@ -45,6 +60,70 @@ struct pos
 
     bool operator<(const pos& other) const {
         return (x < other.x ||( x == other.x && y < other.y));
+    }
+
+    void switchToLogicPos()
+    {
+        if (LOGIC_POS == type)
+        {
+            return;
+        }
+        else if (SCREEN_POS == type)
+        {
+            uint32_t tmp = x;
+            x = y;
+            y = 800 - tmp;
+            type = LOGIC_POS;
+        }
+        else if (CHESS_POS == type)
+        {
+            
+        }
+        else
+        {
+            /* code */
+        }
+        
+    }
+
+    void switchToScreenPos()
+    {
+        if (SCREEN_POS == type)
+        {
+            return;
+        }
+        else if (CHESS_POS == type)
+        {
+            switchToLogicPos();
+        }
+        else
+        {
+            /* code */
+        }
+
+        uint32_t tmp = x;
+        x = 800 - y;
+        y = tmp;
+        type = SCREEN_POS;
+    }
+
+    void switchChessPos()
+    {
+        if (CHESS_POS == type)
+        {
+            return;
+        }
+        else if (SCREEN_POS == type)
+        {
+            switchToLogicPos();
+        }
+        else
+        {
+            /* code */
+        }
+        
+
+
     }
 };
 
@@ -65,6 +144,24 @@ enum DisplayState
     E_Displaying = 1,
 };
 
+enum PiecesType
+{
+    PiecesType_shuai_red = 0,
+    PiecesType_shi_red,
+    PiecesType_xiang_red,
+    PiecesType_ma_red,
+    PiecesType_ju_red,
+    PiecesType_pao_red,
+    PiecesType_bing_red,
+
+    PiecesType_jiang_black,
+    PiecesType_shi_black,
+    PiecesType_xiang_black,
+    PiecesType_ma_black,
+    PiecesType_ju_black,
+    PiecesType_pao_black,
+    PiecesType_zu_black,
+};
 
 
 #endif //DEFINE_H

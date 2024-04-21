@@ -52,7 +52,9 @@ uint32_t EventManager::loop()
             m_eventlist.pop_back();
         }    
         g_event_mutex.unlock();
+#ifdef LINUX_ARM
         usleep(20000);
+#endif
     }
     
     return 0;

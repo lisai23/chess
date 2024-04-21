@@ -5,6 +5,7 @@
 #include <memory>
 #include "define.h"
 #include "image.h"
+//#include "stack.h"
 
 class page
 {
@@ -17,18 +18,26 @@ public:
     virtual void setRect(int32_t width, int32_t height);
     virtual rect getRect();
 
-    virtual void onClick() = 0;
+    virtual void onClick(pos position) = 0;
     static void touchEvent(pos touch);
+
+    void setPos(pos position){ m_pos = position; }
+    pos getPos(){ return m_pos; }
 protected:
-    virtual void open();
-    virtual void close();
-private:
-    static std::map<pos, std::stack<page *>> s_PageMap;
-    void registPageEvent();
+    void open();
+    void close();
+    void flash(bool state);
 
     pos m_pos;
     rect m_rect;
-    Image m_image;
+private:
+    static std::map<pos, std::stack<page *>> s_PageMap;
+    void registPageEvent();
+    void unRegistPageEvent();
+
+    
+    Image *m_image;
+    Image *m_backUp;
 };
 
 
